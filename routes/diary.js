@@ -64,3 +64,21 @@ router.post('/', function(req, res){
         res.json({result: false, error:null, data:null});
     }
 });
+
+//id로 데이터를 찾아서 수정 : 실제 호출주소 http://~~/api/diary/ + body 데이터
+router.put('/:id', function(req, res){
+    var title = req.body.title;
+    var content = req.body.content;
+    const id = req.params.id;
+
+    if(!empty(id)){
+        data.findOneAndUpdate({_id:id}, {$set:
+                {title: title, content: content}
+        }, {returnNewDocument: true}, (error, doc) => {
+            res.json({result:!error, error:error});
+        });
+    }
+    else{
+        res.json({result:false, error:null, data:null});
+    }
+});

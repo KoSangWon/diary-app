@@ -28,3 +28,14 @@ router.get('/', function(req, res){
     });
 });
 
+//id 기반으로 조회하여 데이터를 1건 불러오기 : 실제 호출주소 http://~~/api/diary/id값
+router.get('/:id', function(req, res){
+    data.findOne({id:req.params.id}, function(error, diary){
+        var resultData = "";
+        if(!error && !empty(diary)){
+            resultData = diary;
+        }
+
+        res.json({result: empty(error), error:error, data:resultData});
+    });
+});

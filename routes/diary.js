@@ -39,3 +39,28 @@ router.get('/:id', function(req, res){
         res.json({result: empty(error), error:error, data:resultData});
     });
 });
+
+//데이터를 추가히기 : 실제 호출주소 http://~~/api/diary/ + body데이터
+router.post('/', function(req, res){
+    var title = req.body.title;
+    var content = req.body.content;
+
+    if(!empty(title) && !empty(content)){
+        var diaryData = new data();
+        diaryData.title = title;
+        diaryData.content = content;
+        var now = new Date();
+        diaryData.date = dateFormat(now, "yyyymmdd");
+        diaryData.imgList = "";
+
+        //콘솔창을 통해서 로그를 확인해볼 수 있다.
+        console.log("diary content diaryData :: " + diaryData);
+
+        diaryData.save(function (error, resultData) {
+            res.json({result:empty(error), error:error, data:resultData});
+        });
+    }
+    else{
+        res.json({result: false, error:null, data:null});
+    }
+});

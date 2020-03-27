@@ -82,3 +82,18 @@ router.put('/:id', function(req, res){
         res.json({result:false, error:null, data:null});
     }
 });
+
+//id로 찾아서 삭제 : 실제 호출주소 http://~~/api/diary/id값
+router.delete('/:id', function(req, res){
+    const id = req.params.id;
+    if(!empty(id)){
+        data.remove({_id:id}, function(error, resultData){
+            res.json({result:empty(error), error:error, data:resultData});
+        });
+    }
+    else{
+        res.json({result:false, error:null, data:null});
+    }
+});
+
+module.exports = router;

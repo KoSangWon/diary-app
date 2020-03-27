@@ -3,12 +3,14 @@
 
 var express = require('express');
 var data = require('../model/diary');       //다이어리 모델 스키마를 가져온다.
+
 var bodyParser = require('body-parser');    //body의 json을 파싱해주는 모듈
+
 var dateFormat = require('dateformat');     //날짜형식을 원하는 형태로 바꿔주는 모듈
 var empty = require('is-empty');            //빈값 체크 모듈 *주의 : 0도 empty로 판단한다.
 const stringify = require('json-stringify-pretty-compact')  //json 값을 문자열로 (보기좋게)변환해주는 모듈
 
-var router = express.Router();
+var router = express.Router();//Router는 API를 사용하면서 어떤 url 주소를 받았을 때 해당 내용을 보내주는 것이다.
 
 router.use(bodyParser.urlencoded({extended: false}));
 router.use(bodyParser.json());
@@ -29,7 +31,7 @@ router.get('/', function(req, res){
 });
 
 //id 기반으로 조회하여 데이터를 1건 불러오기 : 실제 호출주소 http://~~/api/diary/id값
-router.get('/:id', function(req, res){
+router.get('/:id', function(req, res){//:id가 있기 때문에 body를 사용하지 않는다.
     data.findOne({id:req.params.id}, function(error, diary){
         var resultData = "";
         if(!error && !empty(diary)){
@@ -41,8 +43,9 @@ router.get('/:id', function(req, res){
 });
 
 //데이터를 추가히기 : 실제 호출주소 http://~~/api/diary/ + body데이터
-router.post('/', function(req, res){
-    var title = req.body.title;
+router.post('/', function(req, res){수
+    //보내는 것이기 때문에 body를 거쳐야한다.
+    var title = req.body.title;//post로 보낼때는 body에 넣는다.
     var content = req.body.content;
 
     if(!empty(title) && !empty(content)){
@@ -72,6 +75,7 @@ router.put('/:id', function(req, res){
     const id = req.params.id;
 
     if(!empty(id)){
+        //findOneAndUpdate => mongoose에서 제공하는 함
         data.findOneAndUpdate({_id:id}, {$set:
                 {title: title, content: content}
         }, {returnNewDocument: true}, (error, doc) => {
@@ -79,6 +83,8 @@ router.put('/:id', function(req, res){
         });
     }
     else{
+
+
         res.json({result:false, error:null, data:null});
     }
 });
@@ -86,7 +92,8 @@ router.put('/:id', function(req, res){
 //id로 찾아서 삭제 : 실제 호출주소 http://~~/api/diary/id값
 router.delete('/:id', function(req, res){
     const id = req.params.id;
-    if(!empty(id)){
+    if(!empty(id)){수
+        //remove => mongoose에서 지원하는 함
         data.remove({_id:id}, function(error, resultData){
             res.json({result:empty(error), error:error, data:resultData});
         });
@@ -96,4 +103,4 @@ router.delete('/:id', function(req, res){
     }
 });
 
-module.exports = router;
+module.exports = router;//누군가가 호출하면 router를 보내준다.
